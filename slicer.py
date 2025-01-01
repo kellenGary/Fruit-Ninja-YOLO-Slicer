@@ -21,24 +21,14 @@ def get_distance(cursor, fruit):
 
 def one_slice(fruits):
     """"Method used to slice one fruit at a time based on distance from mouse"""
-    sorted_fruit = sorted(fruits, key=lambda fruit: get_distance(pyautogui.position(), fruit))
-    for fruit in sorted_fruit:
-        x2, y2 = fruit
-        pyautogui.mouseDown()
-        pyautogui.moveTo(x2 * 5, y2 * 5)
-        pyautogui.mouseUp()
-
-
-def sort_slice(fruits):
-    """Method to slice all fruits sorted by their x coord"""
-    sorted_fruits = sorted(fruits, key=lambda fruit: fruit[0])
-    x1, y1 = sorted_fruits[0]
     pyautogui.mouseDown()
-    for i in range(1, len(sorted_fruits)):
-        pyautogui.moveTo(x1, y1)
-        x2, y2 = sorted_fruits[i]
-        pyautogui.moveTo(x2, y2)
-        x1, y1 = x2, y2
+    i = 0
+    while fruits:
+        fruits = sorted(fruits, key=lambda fruit: get_distance(pyautogui.position(), fruit))
+        fruit = fruits[i]
+        del fruits[i]
+        x2, y2 = fruit
+        pyautogui.moveTo(x2 * 0.5, y2 * 0.5)
     pyautogui.mouseUp()
 
 
@@ -49,5 +39,6 @@ def find_fruit(results):
         for box in result.boxes:
             if classes_names[int(box.cls)] == 'fruit' and box.conf > 0.8:
                 cx, cy = get_mid_point(box)
-                fruits.append((cx, cy))
+                if cy < 1750:
+                    fruits.append((cx, cy))
     return fruits

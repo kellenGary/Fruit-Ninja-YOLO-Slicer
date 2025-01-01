@@ -3,15 +3,21 @@ from mss import mss
 from PIL import Image
 
 
+interval = 0.1
+output_dir = os.path.abspath("./Data")
+os.makedirs(output_dir, exist_ok=True)
+
+
 def take_screenshot(count, output_dir):
     """
     Takes a screenshot of the top left of screen.
     this is optimized for my personal monitor so adjust this for your device.
     """
-    phone = {"top": 60, "left": 0, "width": 1280, "height": 720}
+    monitor = {"top": 60, "left": 0, "width": 1280, "height": 720}
+    laptop = {"top": 100, "left": 100, "width": 1528, "height": 917}
 
     with mss() as sct:
-        screenshot = sct.grab(phone)
+        screenshot = sct.grab(laptop)
         img = Image.frombytes(
             "RGB",
             (screenshot.width, screenshot.height),
@@ -19,13 +25,12 @@ def take_screenshot(count, output_dir):
         )
 
         # Uncomment these two lines to save images to Data folder
-        # path = os.path.join(output_dir, f"image_{count}.jpg")
-        # img.save(path, format="JPEG")
+        path = os.path.join(output_dir, f"image_{count}.jpg")
+        img.save(path, format="JPEG")
 
         # Resize the image (reduce it to 1/5th of its original size)
-        new_size = (int(img.width / 5), int(img.height / 5))
+        new_size = (int(img.width), int(img.height))
         img = img.resize(new_size)
-
     return img
 
 
